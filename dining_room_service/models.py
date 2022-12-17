@@ -4,12 +4,16 @@ from django.db import models
 class User(models.Model):
     """Пользователь"""
     username = models.CharField("Никнейм", max_length=100, unique=True)
-    #id = models.PositiveSmallIntegerField(unique=True, primary_key=True)
+    # id = models.PositiveSmallIntegerField(unique=True)
     firstname = models.CharField("Имя", max_length=100)
     lastname = models.CharField("Фамилия", max_length=100)
     password = models.CharField("Пароль", max_length=100)
-    status = models.CharField(choices=[('STUDENT', 'Student'), ('TEACHER', 'Teacher'), ('COOK', 'Cook'),
-                                       ('ADMIN', 'Admin')], default='STUDENT', max_length=7)
+    status = models.CharField(choices=[
+        ('STUDENT', 'STUDENT'),
+        ('TEACHER', 'TEACHER'),
+        ('COOK', 'COOK'),
+        ('ADMIN', 'ADMIN'),
+    ], default='STUDENT', max_length=100)
 
     def __str__(self):
         return self.username
@@ -22,7 +26,8 @@ class User(models.Model):
 class Product(models.Model):
     """Продукт"""
     name = models.CharField("Продукт", max_length=100)
-    #id = models.PositiveSmallIntegerField(unique=True, primary_key=True)
+
+    # id = models.PositiveSmallIntegerField(unique=True)
 
     def __str__(self):
         return self.name
@@ -35,7 +40,7 @@ class Product(models.Model):
 class Dish(models.Model):
     """Блюдо"""
     name = models.CharField("Столовая", max_length=150)
-    #id = models.PositiveSmallIntegerField(unique=True, primary_key=True)
+    # id = models.PositiveSmallIntegerField(unique=True)
     price = models.PositiveSmallIntegerField("Цена", help_text="указывать сумму в рублях")
     weight = models.PositiveSmallIntegerField("Вес", help_text="указывать массу в граммах")
     calories = models.PositiveSmallIntegerField("Калорийность", help_text="указывать в ккал")
@@ -54,11 +59,13 @@ class Dish(models.Model):
 
 class Menu(models.Model):
     """Меню"""
-    #id = models.PositiveSmallIntegerField(unique=True, primary_key=True)
+    # id = models.PositiveSmallIntegerField(unique=True)
     dishes = models.ManyToManyField(Dish, verbose_name="блюда")
+    #diningRoomId = models.ForeignKey('DiningRoom', default=1, on_delete=models.SET_NULL, null=True)
+    isExtended = models.BooleanField(verbose_name="Расширенное меню или нет", default=True)
 
-    """def __str__(self):
-        return self.id"""
+    def __str__(self):
+        return self.id
 
     class Meta:
         verbose_name = "Меню"
@@ -68,14 +75,13 @@ class Menu(models.Model):
 class DiningRoom(models.Model):
     """Столовая"""
     name = models.CharField("Столовая", max_length=100)
-    #id = models.PositiveSmallIntegerField(unique=True, primary_key=True)
-    # пока не нашёл хороший способ хранить расписание
-    timetable = models.DateTimeField("Расписание")
+
+    # id = models.PositiveSmallIntegerField(unique=True)
     dayMenu = models.OneToOneField(Menu, verbose_name="меню на день", related_name="day_menu",
                                    on_delete=models.SET_NULL, null=True)
     extendedMenu = models.OneToOneField(Menu, verbose_name="расширенное меню", related_name="extended_menu",
                                         on_delete=models.SET_NULL, null=True)
-    status = models.CharField(choices=[('OPEN', 'Open'), ('CLOSE', 'Close')], default='OPEN', max_length=5)
+    status = models.CharField(choices=[('OPEN', 'OPEN'), ('CLOSE', 'CLOSE')], default='OPEN', max_length=100)
 
     def __str__(self):
         return self.name
@@ -87,15 +93,30 @@ class DiningRoom(models.Model):
 
 class Comment(models.Model):
     """Комментарий"""
-    #id = models.PositiveSmallIntegerField(unique=True, primary_key=True)
+    # id = models.PositiveSmallIntegerField(unique=True)
     text = models.TextField("Текст", max_length=5000)
     dish = models.ForeignKey(Dish, verbose_name="блюдо", on_delete=models.SET_NULL, null=True)
     author = models.ForeignKey(User, verbose_name="автор", on_delete=models.SET_NULL, null=True)
     dayTime = models.DateTimeField("Дата и время")
 
-    """def __str__(self):
-        return self.id"""
+    def __str__(self):
+        return self.id
 
     class Meta:
         verbose_name = "Комментарий"
         verbose_name_plural = "Комментарии"
+
+
+class Timetable(models.Model):
+    """Расписание"""
+    diningRoomId = models.ForeignKey(DiningRoom, default=1, on_delete=models.SET_NULL, null=True)
+    dayOfWeek = models.IntegerField(verbose_name="День недели")
+    fromTime = models.TimeField(verbose_name="Начало")
+    toTime = models.TimeField(verbose_name="Закрытие")
+
+    def __str__(self):
+        return self.id
+
+    class Meta:
+        verbose_name = "Расписание"
+        verbose_name_plural = "Расписания"

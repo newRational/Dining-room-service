@@ -17,7 +17,9 @@
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="7d70cef6-2877-4493-996d-414af12dc077" object-ref="schemas/main/tables/dining_room_service_diningroom" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="7d70cef6-2877-4493-996d-414af12dc077" dataset="main.auth_user_user_permissions" active-filter-id="" />
