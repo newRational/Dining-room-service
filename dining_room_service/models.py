@@ -56,7 +56,6 @@ class Dish(models.Model):
 class Menu(models.Model):
     """Меню"""
     dishes = models.ManyToManyField(Dish, verbose_name="блюда")
-    #diningRoomId = models.ForeignKey('DiningRoom', default=1, on_delete=models.SET_NULL, null=True)
     isExtended = models.BooleanField(verbose_name="Расширенное меню или нет", default=True)
 
     def __str__(self):

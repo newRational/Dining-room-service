@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>{{ title }}</title>
+	</head>
+	<body>
+		<h1>{{ header }}</h1>
+		{% for elem in elements %}
+		<ul>
+			{% if elem.name %}
+				<li>{{ elem.name }}</li>
+			{% elif elem.text %}
+				<li>{{ elem.text }}</li>
+			{% elif elem.username %}
+				<li>{{ elem.username }}</li>
+			{% endif %}
+		</ul>
+		{% endfor %}
+	</body>
+</html>
