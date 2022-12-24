@@ -4,7 +4,7 @@ from django.template import loader
 from .models import *
 
 # Функция, которая создает функции-контроллеры
-def create_show_func(aClass, order_field='pk', show_field='pk'):
+def create_show_func(aClass, order_field='pk'):
 
 	# Создаваемая функция-контроллер
 	def show_func(request):
@@ -16,7 +16,6 @@ def create_show_func(aClass, order_field='pk', show_field='pk'):
 		context = {
 			'title': aClass._meta.verbose_name_plural,
 			'header': aClass._meta.verbose_name_plural,
-			'show_field': show_field,
 			'elements': aClass.objects.order_by(order_field),
 		}
 		return HttpResponse(template.render(context, request))
@@ -27,9 +26,9 @@ def create_show_func(aClass, order_field='pk', show_field='pk'):
 # Словарик с функциями контроллерами. 
 # Этот словарик импортируется в dining_room_service/urls.py
 show_funcs = {
-	'user': create_show_func(User, 'username', 'username'),
-	'product': create_show_func(Product, 'name', 'name'),
-	'dish': create_show_func(Dish, 'name', 'name'),
-	'diningroom': create_show_func(DiningRoom, 'name', 'name'),
-	'comment': create_show_func(Comment, show_field='text'),
+	'user': create_show_func(User, 'username'),
+	'product': create_show_func(Product, 'name'),
+	'dish': create_show_func(Dish, 'name'),
+	'diningroom': create_show_func(DiningRoom, 'name'),
+	'comment': create_show_func(Comment),
 }
